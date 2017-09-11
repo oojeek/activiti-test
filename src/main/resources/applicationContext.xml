@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver"/>
+        <property name="url" value="jdbc:jtds:sqlserver://localhost/workflow"/>
+        <property name="username" value="sa"/>
+        <property name="password" value="zz863$senlun"/>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!--配置文件-->
+    <bean id="configuration" class="org.activiti.spring.SpringProcessEngineConfiguration">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="databaseSchemaUpdate" value="true"/>
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
+
+    <!--引擎工厂-->
+    <bean id="engineFactory" class="org.activiti.spring.ProcessEngineFactoryBean">
+        <property name="processEngineConfiguration" ref="configuration"/>
+    </bean>
+
+    <!--八大服务-->
+    <!--仓库服务-->
+    <bean id="repositoryService" factory-bean="engineFactory" factory-method="getRepositoryService"/>
+    <!--运行时服务-->
+    <bean id="runtimeService" factory-bean="engineFactory" factory-method="getRuntimeService"/>
+    <!--表单服务-->
+    <bean id="formService" factory-bean="engineFactory" factory-method="getFormService"/>
+    <!--用户组认证服务-->
+    <bean id="identityService" factory-bean="engineFactory" factory-method="getIdentityService"/>
+    <!--任务服务-->
+    <bean id="taskService" factory-bean="engineFactory" factory-method="getTaskService"/>
+    <!--历史数据服务-->
+    <bean id="historyService" factory-bean="engineFactory" factory-method="getHistoryService"/>
+    <!--管理服务-->
+    <bean id="managementService" factory-bean="engineFactory" factory-method="getManagementService"/>
+    <!--动态流程服务-->
+    <bean id="bpmnService" factory-bean="engineFactory" factory-method="getDynamicBpmnService"/>
+</beans>
